@@ -1,0 +1,128 @@
+- Class: meta
+  Course: Anova
+  Lesson: Anova
+  Author: Simon Stuber
+  Type: Standard
+  Organization: Universitaet Koblenz/Landau
+  Version: 2.4.5
+
+- Class: text
+  Output: Heute schauen wir uns die einfaktorielle Anova an. Bevor wir die einzelnen Befehle kennenlernen, muessen wir unsere Daten laden. 
+
+- Class: cmd_question
+  Output: Laden Sie die Daten mit "load(dateipfad_rda)"
+  CorrectAnswer: load(dateipfad_rda)
+  AnswerTests: omnitest(correctExpr='load(dateipfad_rda)')
+  Hint: Der korrekte Befehl lautet "load(dateipfad_rda)"
+  
+  
+
+- Class: text
+  Output: Eine Vorraussetzung der Anova ist, dass die einzelnen Gruppen gleiche Varianzen haben. Man spricht dann auch von Varianzhomogenitaet. Um das zu ueberpruefen, koennen wir einen Levene Test rechnen mit der ensprechenden Funktion aus dem car Paket. 
+
+- Class: cmd_question
+  Output: Laden Sie das Paket car.
+  CorrectAnswer: library(car)
+  AnswerTests: omnitest(correctExpr='library(car)')
+  Hint: Der korrekte Befehl lautet "library(car)"
+
+- Class: mult_question
+  Output: Was ist der Befehl fuer den Levene Test?
+  AnswerChoices: leveneTest(av~gruppe, center=mean);lv.test(data);leveneTest(data, center=mean)
+  CorrectAnswer: leveneTest(av~gruppe, center=mean)
+  AnswerTests: omnitest(correctVal= 'leveneTest(av~gruppe, center=mean)')
+  Hint: Der korrekte Befehl lautet "leveneTest(av~gruppe, center=mean)"
+
+- Class: cmd_question
+  Output: Rechnen Sie nun einen Levene Test mit unseren Daten im Objekt "data".
+  CorrectAnswer: leveneTest(data$y~data$gruppe, center=mean)
+  AnswerTests: omnitest(correctExpr='leveneTest(data$y~data$gruppe, center=mean)')
+  Hint: Der korrekte Befehl lautet "leveneTest(data$y~data$gruppe, center=mean)"
+
+
+
+- Class: mult_question
+  Output: Welche Schluesse koennen Sie aus dem Output ziehen?
+  AnswerChoices: Varianzhomogenitaet ist gegeben, da p>.1;Varianzhomogenitaet ist nicht gegeben, da p>.1;Varianzhomogenitaet ist nicht gegeben, da F >1
+  CorrectAnswer: Varianzhomogenitaet ist gegeben, da p>.1
+  AnswerTests: omnitest(correctVal= 'Varianzhomogenitaet ist gegeben, da p>.1')
+  Hint: 
+  
+
+
+- Class: text
+  Output: Da die Annahme von gleichen Varianzen erfuellt ist, koennen wir eine Anova rechnen. 
+
+- Class: mult_question
+  Output: Was ist der verallgemeinerte Befehl fuer eine einfaktorielle Anova?
+  AnswerChoices: aov(av~gruppe);anova(av~gruppe);aov(av, gruppe)
+  CorrectAnswer: aov(av~gruppe)
+  AnswerTests: omnitest(correctVal= 'aov(av~gruppe)')
+  Hint: hint
+
+- Class: cmd_question
+  Output: Fuehren Sie eine Anova aus, mit den Daten im Objekt data und speichern sie das Ergebnis in einem Modellobjekt namens "mod".
+  CorrectAnswer: mod <- aov(data$y~data$gruppe)
+  AnswerTests: omnitest(correctExpr='mod <- aov(data$y~data$gruppe)')
+  Hint: Der Befehl lautet "mod <- aov(data$y~data$gruppe)"
+
+- Class: mult_question
+  Output: Was sagt Ihnen das Ergebnis?
+  AnswerChoices: Mindestens zwei der Gruppen unterscheiden sich signifikant; Die drei Gruppen unterscheiden sich signifikant; Es gibt keine signifikanten Gruppenunterschiede
+  CorrectAnswer: Mindestens zwei der Gruppen unterscheiden sich signifikant
+  AnswerTests: omnitest(correctVal= 'Mindestens zwei der Gruppen unterscheiden sich signifikant')
+  Hint: hint
+
+- Class: mult_question
+  Output: Wie gross war die Gesamtstichprobe?
+  AnswerChoices: 60;97;114
+  CorrectAnswer: 60
+  AnswerTests: omnitest(correctVal= '60')
+  Hint: hint
+
+- Class: mult_question
+  Output: Was haetten Sie tun koennen, wenn die Annahme gleicher Varianzen verletzt worden waere?
+  AnswerChoices: Eine Anova mit Welch-Korrektur rechnen; Einzelne t-Test rechnen; Keinen Test rechnen
+  CorrectAnswer: Eine Anova mit Welch-Korrektur rechnen
+  AnswerTests: omnitest(correctVal= 'Eine Anova mit Welch-Korrektur rechnen')
+  Hint: hint
+
+- Class: text
+  Output: Wir haben in unserer Anova also ein signifikantes Ergebnis erhalten. Jetzt wissen wir, dass sich mindestens zwei der drei Gruppen voneinander unterscheiden. Wir wissen allerdings nicht, welche Gruppen sich unterscheiden und wie gross der Effekt ist. 
+
+- Class: cmd_question
+  Output: Berechnen Sie nun die Effektstaerke eta^2 indem Sie die Quadratsummen zwischen den Gruppen teilen durch die totalen Quadratsummen
+  CorrectAnswer: 0.7746112
+  AnswerTests: omnitest(correctVal=0.7746112)
+  Hint: Teilen Sie die Quadratsummen zwischen den Gruppen, durch die Gesamtquadratsummen
+
+- Class: cmd_question
+  Output: Ueberfuehren Sie die berechnete Effektgroesse eta^2 nun in die Effektgroesse phi. Die Formel hierfuer lautet sqrt(eta^2/(1-eta^2))
+  CorrectAnswer: 1.853855
+  AnswerTests: omnitest(correctVal=1.853855)
+  Hint: eta^2 = 0.7746112
+
+- Class: text
+  Output: Um herauszufinden welche Gruppen sich voneinander Unterscheiden, koennen wir nun post-hoc Tests rechnen. 
+
+- Class: text
+  Output: Bei post-hoc Tests werden alle Gruppen in einzelnen t-Tests miteinander verglichen. Da fuer jeden Vergleich eine bestimmte Wahrscheinlichkeit besteht, dass gefundene Gruppenunterschiede auf Zufall beruhen, und da sich diese Wahrscheinlichkeiten aufsummieren, muessen wir den p-Wert korrigieren. Eine Methode um p-Werte zu korrigieren fuer mehrere Vergleiche, ist die Bonferronikorrektur.  
+
+- Class: cmd_question
+  Output: Verwenden Sie die pairwise.t.test() Funktion und rechnen sie post-hoc Tests fuer den Fall das Varianzhomogenitaet gegeben ist. Verwenden Sie die "bonferroni" Korrektur der p-Werte. 
+  CorrectAnswer: pairwise.t.test(data$y, data$gruppe, p.adj="bonferroni")
+  AnswerTests: omnitest(correctExpr='pairwise.t.test(data$y, data$gruppe, p.adj="bonferroni")')
+  Hint: Der korrekte Befehl lautet "pairwise.t.test(data$y, data$gruppe, p.adj="bonferroni")"
+
+
+
+- Class: cmd_question
+  Output: Verwenden Sie nun die pwr.anova.test() Funktion aus dem pwr Paket um zu berechnen, wie gross die Power war den gefundenen Effekt aufzudecken. Verwenden Sie hierfuer die Effektgroesse phi (auch genannt f). 
+  CorrectAnswer: pwr.anova.test(k = 3, n = 20, f = 1.853855, sig.level = 0.05)
+  AnswerTests: omnitest(correctExpr='pwr.anova.test(k = 3, n = 20, f = 1.853855, sig.level = 0.05)')
+  Hint: Der korrekte Befehl lautet "pwr.anova.test(k = 3, n = 20, f = 1.853855, sig.level = 0.05)"
+
+- Class: text
+  Output: Das war die heutige Swirl Lesson, bis naechste Woche!
+
+
